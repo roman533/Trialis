@@ -1,6 +1,7 @@
-namespace Trialis.Domain.Interfaces;
-
-public interface IStudentInformation
+namespace Trialis.Domain.Interfaces
 {
-    string GetStudentInfo();
+    public interface IStudentInformation
+    {
+        string GetStudentInfo();
+    }
 }

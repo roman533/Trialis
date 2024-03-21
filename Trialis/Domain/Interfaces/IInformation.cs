@@ -1,6 +1,7 @@
-namespace Trialis.Domain.Interfaces;
-
-public interface IInformation
+namespace Trialis.Domain.Interfaces
 {
-    string GetInfo();
+    public interface IInformation
+    {
+        string GetInfo();
+    }
 }

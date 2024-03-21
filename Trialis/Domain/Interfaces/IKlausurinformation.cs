@@ -1,6 +1,8 @@
-namespace Trialis.Domain.Interfaces;
-
-public interface IKlausurInformation
+namespace Trialis.Domain.Interfaces
 {
-    string GetKlausurInfo();
+    public interface IKlausurInformation
+    {
+        string GetKlausurInfo();
+    }
+
 }
