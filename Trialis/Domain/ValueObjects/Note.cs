@@ -2,7 +2,7 @@ namespace Trialis.Domain.ValueObjects
 {
     public class Note
     {
-        public int Wert { get; private set; }
+        public int Wert { get; set; }
 
         // Konstruktor für eine gültige Note
         private Note(int wert)

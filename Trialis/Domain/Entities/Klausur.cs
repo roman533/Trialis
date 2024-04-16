@@ -3,14 +3,14 @@ using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Entities
 {
-    public class Klausur :IKlausurInformation
+    public class Klausur :IKlausur
     {
-        public int Id { get; private set; }
-        public DateTime Datum { get; private set; }
-        public List<Pruefungsaufgabe> Pruefungsaufgaben { get; private set; }
-        public Dictionary<int, Note> Ergebnisse { get; private set; }
-        public string Thema { get; private set; }
-        public string Beschreibung { get; private set; }
+        public int Id { get; set; }
+        public DateTime Datum { get; set; }
+        public List<Pruefungsaufgabe> Pruefungsaufgaben { get; set; }
+        public Dictionary<int, Note> Ergebnisse { get; set; }
+        public string Thema { get; set; }
+        public string Beschreibung { get; set; }
 
         public Klausur(int id, DateTime datum, string thema, string beschreibung, List<Pruefungsaufgabe> pruefungsaufgaben)
         {

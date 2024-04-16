@@ -3,8 +3,8 @@ namespace Trialis.Domain.Entities;
 public class Professor
 {
     public int Id { get; private set; }
-    public string Name { get; private set; }
-    public string Fachgebiet { get; private set; }
+    public string Name { get; set; }
+    public string Fachgebiet { get; set; }
 
     public Professor(int id, string name, string fachgebiet)
     {

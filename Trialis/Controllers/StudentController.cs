@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using Trialis.Domain.Entities;
+using Trialis.Domain.Interfaces;
 
 namespace Trialis.Controllers
 {
@@ -10,32 +9,102 @@ namespace Trialis.Controllers
     public class StudentController : ControllerBase
     {
         private List<Student> _students = new List<Student>();
+        private readonly IStudent _studentRepository;
+
+        public StudentController(IStudent studentRepository)
+        {
+            _studentRepository = studentRepository;
+        }
 
         [HttpGet]
         public IActionResult GetAllStudents()
         {
-            return Ok(_students);
+            try
+            {
+                var students = _studentRepository.GetAllStudents();
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Abrufen aller Studenten: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Abrufen aller Studenten.");
+            }
         }
+
 
         [HttpGet("{id}")]
         public IActionResult GetStudentById(int id)
         {
-            var student = _students.FirstOrDefault(s => s.Id == id);
-            if (student == null)
+            try
             {
-                return NotFound();
+                var student = _studentRepository.GetStudentById(id);
+            
+                if (student == null)
+                {
+                    return NotFound($"Student mit ID {id} wurde nicht gefunden.");
+                }
+            
+                return Ok(student);
             }
-
-            return Ok(student);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Abrufen des Studenten mit ID {id}: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Abrufen des Studenten.");
+            }
         }
+
 
         [HttpPost]
         public IActionResult AddStudent([FromBody] Student student)
         {
-            // Hier könnten Validierungen oder weitere Logik erfolgen
-            _students.Add(student);
+            try
+            {
+                _studentRepository.AddStudent(student);
+                return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Hinzufügen des Studenten: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Hinzufügen des Studenten.");
+            }
+        }
 
-            return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+        [HttpPut("{id}")]
+        public IActionResult UpdateStudent(int id, string newName)
+        {
+            try
+            {
+                var existingStudent = _studentRepository.GetStudentById(id);
+
+                if (existingStudent == null)
+                {
+                    return NotFound("Student nicht gefunden.");
+                }
+
+                existingStudent.Name = newName;
+                _studentRepository.UpdateStudent(existingStudent);
+                return Ok("Student erfolgreich aktualisiert.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Aktualisieren des Studenten: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Aktualisieren des Studenten.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteStudent(int id)
+        {
+            try
+            {
+                _studentRepository.DeleteStudent(id);
+                return Ok("Student erfolgreich gelöscht.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Löschen des Studenten: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Löschen des Studenten.");
+            }
         }
     }
 }

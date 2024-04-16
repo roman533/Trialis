@@ -2,7 +2,7 @@ using Trialis.Domain.Interfaces;
 
 namespace Trialis.Domain.Entities
 {
-    public class Pruefungsaufgabe : IInformation
+    public class Pruefungsaufgabe : IPruefungsaufgabe
     {
         public int Id { get; private set; }
         public string Frage { get; private set; }

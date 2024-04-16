@@ -1,71 +1,157 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Trialis.Domain.Entities;
+using Trialis.Domain.ValueObjects;
 
-namespace Trialis.Api.Controllers
+namespace Trialis.Controllers
 {
     [ApiController]
-    [Route("api/students")]
-    public class StudentController : ControllerBase
+    [Route("api/klausuren")]
+    public class KlausurController : ControllerBase
     {
-        private List<Student> _students = new List<Student>();
+        private readonly List<Klausur> _klausuren = new List<Klausur>();
 
         [HttpGet]
-        public IActionResult GetAllStudents()
+        public IActionResult GetAllKlausuren()
         {
-            return Ok(_students);
+            return Ok(_klausuren);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetStudentById(int id)
+        public IActionResult GetKlausurById(int id)
         {
-            var student = _students.FirstOrDefault(s => s.Id == id);
-            if (student == null)
+            var klausur = _klausuren.FirstOrDefault(k => k.Id == id);
+            if (klausur == null)
             {
                 return NotFound();
             }
 
-            return Ok(student);
+            return Ok(klausur);
         }
 
         [HttpPost]
-        public IActionResult AddStudent([FromBody] Student student)
+        public IActionResult AddKlausur([FromBody] Klausur klausur)
         {
-            // Hier könnten Validierungen oder weitere Logik erfolgen
-            _students.Add(student);
+            if (klausur == null)
+            {
+                return BadRequest("Die Klausurdaten dürfen nicht leer sein.");
+            }
 
-            return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
+            if (string.IsNullOrWhiteSpace(klausur.Beschreibung))
+            {
+                return BadRequest("Die Bezeichnung der Klausur darf nicht leer sein.");
+            }
+
+            if (klausur.Datum == default(DateTime))
+            {
+                return BadRequest("Das Datum der Klausur ist ungültig.");
+            }
+
+            if (klausur.Ergebnisse == null || klausur.Ergebnisse.Count == 0)
+            {
+                return BadRequest("Es müssen Ergebnisse für die Klausur angegeben werden.");
+            }
+
+            foreach (var ergebnis in klausur.Ergebnisse.Values)
+            {
+                if (ergebnis.Wert < 1 || ergebnis.Wert > 5)
+                {
+                    return BadRequest("Ungültige Noten wurden angegeben. Noten müssen im Bereich von 1 bis 5 liegen.");
+                }
+            }
+
+            // Hier könnte weitere spezifische Logik für die Validierung und Verarbeitung der Klausurdaten erfolgen
+
+            klausur.Id = GenerateUniqueId(); // Generiert eine eindeutige ID für die Klausur
+            _klausuren.Add(klausur);
+
+            return CreatedAtAction(nameof(GetKlausurById), new { id = klausur.Id }, klausur);
         }
+
 
         [HttpPut("{id}")]
-        public IActionResult UpdateStudent(int id, [FromBody] Student updatedStudent)
+        public IActionResult UpdateKlausur(int id, [FromBody] Klausur updatedKlausur)
         {
-            var existingStudent = _students.FirstOrDefault(s => s.Id == id);
-            if (existingStudent == null)
+            if (updatedKlausur == null)
             {
-                return NotFound();
+                return BadRequest("Die Daten für die zu aktualisierende Klausur dürfen nicht leer sein.");
             }
 
-            // Hier könnten Validierungen oder weitere Logik erfolgen
-            existingStudent.Name = updatedStudent.Name;
-            existingStudent.Matrikelnummer = updatedStudent.Matrikelnummer;
-            existingStudent.Studiengang = updatedStudent.Studiengang;
-            existingStudent.Semester = updatedStudent.Semester;
+            var existingKlausur = _klausuren.FirstOrDefault(k => k.Id == id);
+            if (existingKlausur == null)
+            {
+                return NotFound("Die Klausur wurde nicht gefunden.");
+            }
+
+            if (string.IsNullOrWhiteSpace(updatedKlausur.Beschreibung))
+            {
+                return BadRequest("Die Bezeichnung der Klausur darf nicht leer sein.");
+            }
+
+            if (updatedKlausur.Datum == default(DateTime))
+            {
+                return BadRequest("Das Datum der Klausur ist ungültig.");
+            }
+
+            if (updatedKlausur.Ergebnisse == null || updatedKlausur.Ergebnisse.Count == 0)
+            {
+                return BadRequest("Es müssen Ergebnisse für die Klausur angegeben werden.");
+            }
+
+            foreach (var ergebnis in updatedKlausur.Ergebnisse.Values)
+            {
+                if (ergebnis.Wert < 1 || ergebnis.Wert > 5)
+                {
+                    return BadRequest("Ungültige Noten wurden angegeben. Noten müssen im Bereich von 1 bis 5 liegen.");
+                }
+            }
+
+            // Hier könnte weitere spezifische Logik für die Validierung und Verarbeitung der aktualisierten Klausurdaten erfolgen
+
+            existingKlausur.Beschreibung = updatedKlausur.Beschreibung;
+            existingKlausur.Datum = updatedKlausur.Datum;
+            existingKlausur.Ergebnisse = updatedKlausur.Ergebnisse;
 
             return NoContent();
         }
 
+
         [HttpDelete("{id}")]
-        public IActionResult DeleteStudent(int id)
+        public IActionResult DeleteKlausur(int id)
         {
-            var studentToRemove = _students.FirstOrDefault(s => s.Id == id);
-            if (studentToRemove == null)
+            var klausurToRemove = _klausuren.FirstOrDefault(k => k.Id == id);
+            if (klausurToRemove == null)
             {
-                return NotFound();
+                return NotFound("Die zu löschende Klausur wurde nicht gefunden.");
+            }
+            
+            if (KlausurBewertet(klausurToRemove))
+            {
+                return BadRequest("Die Klausur kann nicht gelöscht werden, da sie bereits bewertet wurde.");
             }
 
-            _students.Remove(studentToRemove);
+            _klausuren.Remove(klausurToRemove);
 
             return NoContent();
+        }
+
+        private bool KlausurBewertet(Klausur klausur)
+        {
+            foreach (var ergebnis in klausur.Ergebnisse.Values)
+            {
+                if (ergebnis.Wert != 0) 
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        private int GenerateUniqueId()
+        {
+            return new Random().Next(1000, 9999);
         }
     }
 }
