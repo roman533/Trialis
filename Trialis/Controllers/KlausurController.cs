@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Trialis.Domain.Entities;
+using Trialis.Domain.Interfaces;
 using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Controllers
@@ -11,130 +12,168 @@ namespace Trialis.Controllers
     [Route("api/klausuren")]
     public class KlausurController : ControllerBase
     {
-        private readonly List<Klausur> _klausuren = new List<Klausur>();
+        private readonly IKlausur _klausurRepository;
+
+        public KlausurController(IKlausur klausurRepository)
+        {
+            _klausurRepository = klausurRepository;
+        }
 
         [HttpGet]
         public IActionResult GetAllKlausuren()
         {
-            return Ok(_klausuren);
+            try
+            {
+                var klausuren = _klausurRepository.GetAllKlausuren();
+                return Ok(klausuren);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Abrufen aller Klausuren: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Abrufen aller Klausuren.");
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetKlausurById(int id)
         {
-            var klausur = _klausuren.FirstOrDefault(k => k.Id == id);
-            if (klausur == null)
+            try
             {
-                return NotFound();
+                var klausur = _klausurRepository.GetKlausurById(id);
+            
+                if (klausur == null)
+                {
+                    return NotFound($"Klausur mit der ID {id} wurde nicht gefunden.");
+                }
+            
+                return Ok(klausur);
             }
-
-            return Ok(klausur);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Abrufen der Klausur nach ID: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Abrufen der Klausur nach ID.");
+            }
         }
 
         [HttpPost]
         public IActionResult AddKlausur([FromBody] Klausur klausur)
         {
-            if (klausur == null)
+            try
             {
-                return BadRequest("Die Klausurdaten dürfen nicht leer sein.");
-            }
-
-            if (string.IsNullOrWhiteSpace(klausur.Beschreibung))
-            {
-                return BadRequest("Die Bezeichnung der Klausur darf nicht leer sein.");
-            }
-
-            if (klausur.Datum == default(DateTime))
-            {
-                return BadRequest("Das Datum der Klausur ist ungültig.");
-            }
-
-            if (klausur.Ergebnisse == null || klausur.Ergebnisse.Count == 0)
-            {
-                return BadRequest("Es müssen Ergebnisse für die Klausur angegeben werden.");
-            }
-
-            foreach (var ergebnis in klausur.Ergebnisse.Values)
-            {
-                if (ergebnis.Wert < 1 || ergebnis.Wert > 5)
+                if (klausur == null)
                 {
-                    return BadRequest("Ungültige Noten wurden angegeben. Noten müssen im Bereich von 1 bis 5 liegen.");
+                    return BadRequest("Die Klausurdaten dürfen nicht leer sein.");
                 }
+
+                if (string.IsNullOrWhiteSpace(klausur.Beschreibung))
+                {
+                    return BadRequest("Die Bezeichnung der Klausur darf nicht leer sein.");
+                }
+
+                if (klausur.Datum == default(DateTime))
+                {
+                    return BadRequest("Das Datum der Klausur ist ungültig.");
+                }
+
+                if (klausur.Ergebnisse == null || klausur.Ergebnisse.Count == 0)
+                {
+                    return BadRequest("Es müssen Ergebnisse für die Klausur angegeben werden.");
+                }
+
+                foreach (var ergebnis in klausur.Ergebnisse.Values)
+                {
+                    if (ergebnis.Wert < 1 || ergebnis.Wert > 5)
+                    {
+                        return BadRequest("Ungültige Noten wurden angegeben. Noten müssen im Bereich von 1 bis 5 liegen.");
+                    }
+                }
+                
+                _klausurRepository.AddKlausur(klausur);
+                return Ok("Klausur wurde erfolgreich hinzugefügt.");
             }
-
-            // Hier könnte weitere spezifische Logik für die Validierung und Verarbeitung der Klausurdaten erfolgen
-
-            klausur.Id = GenerateUniqueId(); // Generiert eine eindeutige ID für die Klausur
-            _klausuren.Add(klausur);
-
-            return CreatedAtAction(nameof(GetKlausurById), new { id = klausur.Id }, klausur);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Hinzufügen der Klausur: {ex.Message}");            
+                return StatusCode(500, "Interner Serverfehler beim Hinzufügen der Klausur.");
+            }
         }
 
 
         [HttpPut("{id}")]
         public IActionResult UpdateKlausur(int id, [FromBody] Klausur updatedKlausur)
         {
-            if (updatedKlausur == null)
+            try
             {
-                return BadRequest("Die Daten für die zu aktualisierende Klausur dürfen nicht leer sein.");
-            }
-
-            var existingKlausur = _klausuren.FirstOrDefault(k => k.Id == id);
-            if (existingKlausur == null)
-            {
-                return NotFound("Die Klausur wurde nicht gefunden.");
-            }
-
-            if (string.IsNullOrWhiteSpace(updatedKlausur.Beschreibung))
-            {
-                return BadRequest("Die Bezeichnung der Klausur darf nicht leer sein.");
-            }
-
-            if (updatedKlausur.Datum == default(DateTime))
-            {
-                return BadRequest("Das Datum der Klausur ist ungültig.");
-            }
-
-            if (updatedKlausur.Ergebnisse == null || updatedKlausur.Ergebnisse.Count == 0)
-            {
-                return BadRequest("Es müssen Ergebnisse für die Klausur angegeben werden.");
-            }
-
-            foreach (var ergebnis in updatedKlausur.Ergebnisse.Values)
-            {
-                if (ergebnis.Wert < 1 || ergebnis.Wert > 5)
+                if (updatedKlausur == null)
                 {
-                    return BadRequest("Ungültige Noten wurden angegeben. Noten müssen im Bereich von 1 bis 5 liegen.");
+                    return BadRequest("Die Daten für die zu aktualisierende Klausur dürfen nicht leer sein.");
                 }
+
+                var existingKlausur = _klausurRepository.GetKlausurById(id);
+                if (existingKlausur == null)
+                {
+                    return NotFound("Die Klausur wurde nicht gefunden.");
+                }
+
+                if (string.IsNullOrWhiteSpace(updatedKlausur.Beschreibung))
+                {
+                    return BadRequest("Die Bezeichnung der Klausur darf nicht leer sein.");
+                }
+
+                if (updatedKlausur.Datum == default(DateTime))
+                {
+                    return BadRequest("Das Datum der Klausur ist ungültig.");
+                }
+
+                if (updatedKlausur.Ergebnisse == null || updatedKlausur.Ergebnisse.Count == 0)
+                {
+                    return BadRequest("Es müssen Ergebnisse für die Klausur angegeben werden.");
+                }
+
+                foreach (var ergebnis in updatedKlausur.Ergebnisse.Values)
+                {
+                    if (ergebnis.Wert < 1 || ergebnis.Wert > 5)
+                    {
+                        return BadRequest("Ungültige Noten wurden angegeben. Noten müssen im Bereich von 1 bis 5 liegen.");
+                    }
+                }
+            
+                _klausurRepository.UpdateKlausur(updatedKlausur);
+
+                return Ok("Klausur wurde erfolgreich aktualisiert.");
             }
-
-            // Hier könnte weitere spezifische Logik für die Validierung und Verarbeitung der aktualisierten Klausurdaten erfolgen
-
-            existingKlausur.Beschreibung = updatedKlausur.Beschreibung;
-            existingKlausur.Datum = updatedKlausur.Datum;
-            existingKlausur.Ergebnisse = updatedKlausur.Ergebnisse;
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Aktualisieren der Klausur: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Aktualisieren der Klausur.");
+            }
         }
 
 
         [HttpDelete("{id}")]
         public IActionResult DeleteKlausur(int id)
         {
-            var klausurToRemove = _klausuren.FirstOrDefault(k => k.Id == id);
-            if (klausurToRemove == null)
+            try
             {
-                return NotFound("Die zu löschende Klausur wurde nicht gefunden.");
+                var existingKlausur = _klausurRepository.GetKlausurById(id);
+                if (existingKlausur == null)
+                {
+                    return NotFound($"Klausur mit der ID {id} wurde nicht gefunden.");
+                }
+
+                bool success = _klausurRepository.DeleteKlausur(id);
+                if (!success)
+                {
+                    return StatusCode(500, $"Fehler beim Löschen der Klausur mit der ID {id}.");
+                }
+
+                return Ok("Klausur wurde erfolgreich gelöscht.");
             }
-            
-            if (KlausurBewertet(klausurToRemove))
+            catch (Exception ex)
             {
-                return BadRequest("Die Klausur kann nicht gelöscht werden, da sie bereits bewertet wurde.");
+                Console.WriteLine($"Fehler beim Löschen der Klausur: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Löschen der Klausur.");
             }
-
-            _klausuren.Remove(klausurToRemove);
-
-            return NoContent();
         }
 
         private bool KlausurBewertet(Klausur klausur)

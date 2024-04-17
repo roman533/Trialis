@@ -5,8 +5,11 @@ namespace Trialis.Domain.Interfaces
 {
     public interface IKlausur
     {
-        void ErgebnisHinzufuegen(Student student, Note note);
-        string GetKlausurInfo();
+        List<Klausur> GetAllKlausuren();
+        public Klausur GetKlausurById(int id);
+        public void AddKlausur(Klausur klausur);
+        public void UpdateKlausur(Klausur klausur);
+        public bool DeleteKlausur(int id);
     }
 
 }

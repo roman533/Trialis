@@ -10,7 +10,10 @@ namespace Trialis.Domain.Entities
         public List<Klausur> Klausuren { get; set; } = new List<Klausur>();
         public string Studiengang { get; set; } 
         public int Semester { get; set; }
+        public List<Studienfach> Studienfaecher { get; set; } = new List<Studienfach>();
+
         private static List<Student> _studentList = new List<Student>();
+
 
         public Student(int id, short matrikelnummer, string name, string studiengang, int semester)
         {
@@ -55,15 +58,23 @@ namespace Trialis.Domain.Entities
 
         public List<Student> GetAllStudents()
         {
-            List<Student> studentList = _studentList;
-
-            if (studentList == null)
+            try
             {
-                Console.WriteLine("Keine Studenten vorhanden.");
-                return null;
-            }
+                List<Student> studentList = _studentList;
 
-            return studentList;
+                if (studentList == null)
+                {
+                    Console.WriteLine("Keine Studenten vorhanden.");
+                    return null;
+                }
+
+                return studentList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Laden aller Studenten: {ex.Message}");
+                throw;
+            }
         }
 
         public Student GetStudentById(int id)
@@ -148,9 +159,35 @@ namespace Trialis.Domain.Entities
             }
         }
 
-        public IEnumerable<Student> GetStudentsByStudienfach(string studienfach)
+        public List<Student> GetStudentsByStudienfach(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (!_studentList.Any(s => s.GetStudienfaecher().Any(sf => sf.Id == id)))
+                {
+                    return null;
+                }
+
+                return _studentList.Where(s => s.GetStudienfaecher().Any(sf => sf.Id == id)).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Laden des Studenten anhand des Studienfachs: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public List<Studienfach> GetStudienfaecher()
+        {
+            try
+            {
+                return Studienfaecher;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Laden des der Studienfächer");
+                throw;
+            }
         }
     }
 }

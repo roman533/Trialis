@@ -106,5 +106,26 @@ namespace Trialis.Controllers
                 return StatusCode(500, "Interner Serverfehler beim Löschen des Studenten.");
             }
         }
+        
+        [HttpGet("{id}")]
+        public IActionResult GetStudentsByStudienfach(int studienfachId)
+        {
+            try
+            {
+                var students = _studentRepository.GetStudentsByStudienfach(studienfachId);
+            
+                if (students == null || students.Count == 0)
+                {
+                    return NotFound($"Keine Studenten gefunden, die das Studienfach mit ID {studienfachId} haben.");
+                }
+            
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Abrufen von Studenten nach Studienfach: {ex.Message}");
+                return StatusCode(500, "Interner Serverfehler beim Abrufen von Studenten nach Studienfach.");
+            }
+        }
     }
 }

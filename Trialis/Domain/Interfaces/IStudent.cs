@@ -9,8 +9,6 @@ namespace Trialis.Domain.Interfaces
         void AddStudent(Student student);
         void UpdateStudent(Student student);
         void DeleteStudent(int id);
-
-        // Zusätzliche Methode für erweiterte Funktionalität
-        IEnumerable<Student> GetStudentsByStudienfach(string studienfach);
+        List<Student> GetStudentsByStudienfach(int id);
     }
 }
