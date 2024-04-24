@@ -7,7 +7,7 @@ namespace Trialis.Domain.Interfaces
     {
         List<Klausur> GetAllKlausuren();
         public Klausur GetKlausurById(int id);
-        public void AddKlausur(Klausur klausur);
+        public void AddKlausur(Studienfach studienfach, Student student, Klausur klausur);
         public void UpdateKlausur(Klausur klausur);
         public bool DeleteKlausur(int id);
     }

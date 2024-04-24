@@ -11,10 +11,11 @@ namespace Trialis.Domain.Entities
         public Dictionary<int, Note> Ergebnisse { get; set; }
         public string Thema { get; set; }
         public string Beschreibung { get; set; }
+        public int StudentId { get; set; }
+        public int StudienfachId { get; set; }
         private static List<Klausur> _klausurList = new List<Klausur>();
 
-
-        public Klausur(int id, DateTime datum, string thema, string beschreibung, List<Pruefungsaufgabe> pruefungsaufgaben)
+        public Klausur(int id, DateTime datum, string thema, string beschreibung, List<Pruefungsaufgabe> pruefungsaufgaben, int studentId, int studienfachId)
         {
             Id = id;
             Datum = datum;
@@ -22,6 +23,8 @@ namespace Trialis.Domain.Entities
             Beschreibung = beschreibung;
             Pruefungsaufgaben = pruefungsaufgaben;
             Ergebnisse = new Dictionary<int, Note>();
+            StudentId = studentId;
+            StudienfachId = studienfachId;
         }
 
         public List<Klausur> GetAllKlausuren()
@@ -64,7 +67,7 @@ namespace Trialis.Domain.Entities
             }
         }
         
-        public void AddKlausur(Klausur klausur)
+        public void AddKlausur(Studienfach studienfach, Student student, Klausur klausur)
         {
             try
             {
@@ -77,6 +80,9 @@ namespace Trialis.Domain.Entities
                 {
                     throw new InvalidOperationException($"Eine Klausur mit der ID {klausur.Id} existiert bereits.");
                 }
+
+                klausur.StudentId = student.Id;
+                klausur.StudienfachId = studienfach.Id;
                 
                 _klausurList.Add(klausur);
             }
@@ -107,6 +113,8 @@ namespace Trialis.Domain.Entities
                 existingKlausur.Thema = klausur.Thema;
                 existingKlausur.Beschreibung = klausur.Beschreibung;
                 existingKlausur.Pruefungsaufgaben = klausur.Pruefungsaufgaben;
+                existingKlausur.StudentId = klausur.StudentId;
+                existingKlausur.StudienfachId = klausur.StudienfachId;
                 existingKlausur.Ergebnisse = new Dictionary<int, Note>();
             }
             catch (Exception ex)
@@ -147,11 +155,10 @@ namespace Trialis.Domain.Entities
             if (!Ergebnisse.ContainsKey(student.Id))
             {
                 Ergebnisse.Add(student.Id, note);
-                student.HinzufuegenKlausur(this); // Hinzufügen der Klausur zum Studenten
+                student.HinzufuegenKlausur(this); 
             }
             else
             {
-                // Optional: Logik für Aktualisierung des Ergebnisses
                 Ergebnisse[student.Id] = note;
             }
         }

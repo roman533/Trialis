@@ -13,10 +13,12 @@ namespace Trialis.Controllers
     public class KlausurController : ControllerBase
     {
         private readonly IKlausur _klausurRepository;
+        private readonly IStudent _studentRepository;
 
-        public KlausurController(IKlausur klausurRepository)
+        public KlausurController(IKlausur klausurRepository, IStudent studentRepository)
         {
             _klausurRepository = klausurRepository;
+            _studentRepository = studentRepository;
         }
 
         [HttpGet]
@@ -56,7 +58,7 @@ namespace Trialis.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddKlausur([FromBody] Klausur klausur)
+        public IActionResult AddKlausur(int studentId, int studienfachId, [FromBody] Klausur klausur)
         {
             try
             {
@@ -88,7 +90,19 @@ namespace Trialis.Controllers
                     }
                 }
                 
-                _klausurRepository.AddKlausur(klausur);
+                var student = _studentRepository.GetStudentById(studentId);
+                if (student == null)
+                {
+                    return NotFound("Student nicht gefunden.");
+                }
+
+                var studienfach = student.Studienfaecher.FirstOrDefault(sf => sf.Id == studienfachId);
+                if (studienfach == null)
+                {
+                    return NotFound("Studienfach nicht gefunden oder dem Studenten nicht zugeordnet.");
+                }
+                
+                _klausurRepository.AddKlausur(studienfach, student, klausur);
                 return Ok("Klausur wurde erfolgreich hinzugefügt.");
             }
             catch (Exception ex)
