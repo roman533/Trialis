@@ -3,9 +3,9 @@ using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Interfaces;
 
-public interface IPruefungsaufgabe
+public interface IPruefungsaufgabeService
 {
-    public IEnumerable<Pruefungsaufgabe> GetAllPruefungsaufgaben();
+    public List<Pruefungsaufgabe> GetAllPruefungsaufgaben();
     public Pruefungsaufgabe GetPruefungsaufgabeById(int id);
     public void AddPruefungsaufgabe(Pruefungsaufgabe pruefungsaufgabe);
     public void UpdatePruefungsaufgabe(int id, Pruefungsaufgabe updatedPruefungsaufgabe);

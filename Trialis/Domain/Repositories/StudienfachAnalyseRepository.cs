@@ -1,23 +1,14 @@
-using Trialis.Domain.Interfaces;
+using Trialis.Domain.Entities;
 using Trialis.Domain.ValueObjects;
 
-namespace Trialis.Domain.Entities;
+namespace Trialis.Domain.Repositories;
 
-public class StudienfachAnalyse
+public class StudienfachAnalyseRepository : IStudienfachAnalyseRepository
 {
-    public int Id { get; set; }
-    public int StudentId { get; set; }
-    public int StudienfachId { get; set; }
     public List<Note> Noten { get; set; }
-
-    public StudienfachAnalyse(int studentId, int studienfachId, List<Note> noten = null)
-    {
-        StudentId = studentId;
-        StudienfachId = studienfachId;
-        Noten = noten;
-    }
-
-    /*public void AddNote(Note note)
+    private readonly List<Note> _noten;
+    
+    public void AddNote(Note note)
     {
         try
         {
@@ -76,11 +67,6 @@ public class StudienfachAnalyse
                 throw new ArgumentNullException(nameof(updatedAnalyse), "Die aktualisierte StudienfachAnalyse darf nicht null sein.");
             }
 
-            if (StudentId != updatedAnalyse.StudentId || StudienfachId != updatedAnalyse.StudienfachId)
-            {
-                throw new ArgumentException("Die IDs der aktualisierten StudienfachAnalyse stimmen nicht überein.");
-            }
-
             if (updatedAnalyse.Noten.Count > 2)
             {
                 throw new ArgumentException("Es dürfen maximal 2 Noten zur StudienfachAnalyse hinzugefügt werden.");
@@ -120,7 +106,7 @@ public class StudienfachAnalyse
         {
             var studienfachAnalyse = GetStudienfachAnalyse(studentId, studienfachId);
 
-            double durchschnittsnote = studienfachAnalyse.CalculateDurchschnittsnote();
+            double durchschnittsnote = CalculateDurchschnittsnote();
 
             const double bestehensgrenze = 4.0;
 
@@ -131,5 +117,5 @@ public class StudienfachAnalyse
             Console.WriteLine($"Fehler beim Überprüfen, ob das Studienfach bestanden ist: {ex.Message}");
             throw;
         }
-    }*/
+    }
 }

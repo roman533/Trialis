@@ -3,7 +3,7 @@ using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Interfaces;
 
-public interface IStudienfachAnalyse
+public interface IStudienfachAnalyseService
 {
     public void AddNote(Note note);
     public StudienfachAnalyse GetStudienfachAnalyse(int studentId, int studienfachId);

@@ -12,13 +12,13 @@ namespace Trialis.Controllers
     [Route("api/klausuren")]
     public class KlausurController : ControllerBase
     {
-        private readonly IKlausur _klausurRepository;
-        private readonly IStudent _studentRepository;
+        private readonly IKlausurService _klausurService;
+        private readonly IStudentService _studentService;
 
-        public KlausurController(IKlausur klausurRepository, IStudent studentRepository)
+        public KlausurController(IKlausurService klausurService, IStudentService studentRepository)
         {
-            _klausurRepository = klausurRepository;
-            _studentRepository = studentRepository;
+            _klausurService = klausurService;
+            _studentService = studentRepository;
         }
 
         [HttpGet]
@@ -26,7 +26,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var klausuren = _klausurRepository.GetAllKlausuren();
+                var klausuren = _klausurService.GetAllKlausuren();
                 return Ok(klausuren);
             }
             catch (Exception ex)
@@ -41,7 +41,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var klausur = _klausurRepository.GetKlausurById(id);
+                var klausur = _klausurService.GetKlausurById(id);
             
                 if (klausur == null)
                 {
@@ -90,7 +90,7 @@ namespace Trialis.Controllers
                     }
                 }
                 
-                var student = _studentRepository.GetStudentById(studentId);
+                var student = _studentService.GetStudentById(studentId);
                 if (student == null)
                 {
                     return NotFound("Student nicht gefunden.");
@@ -102,7 +102,7 @@ namespace Trialis.Controllers
                     return NotFound("Studienfach nicht gefunden oder dem Studenten nicht zugeordnet.");
                 }
                 
-                _klausurRepository.AddKlausur(studienfach, student, klausur);
+                _klausurService.AddKlausur(studienfach, student, klausur);
                 return Ok("Klausur wurde erfolgreich hinzugefügt.");
             }
             catch (Exception ex)
@@ -123,7 +123,7 @@ namespace Trialis.Controllers
                     return BadRequest("Die Daten für die zu aktualisierende Klausur dürfen nicht leer sein.");
                 }
 
-                var existingKlausur = _klausurRepository.GetKlausurById(id);
+                var existingKlausur = _klausurService.GetKlausurById(id);
                 if (existingKlausur == null)
                 {
                     return NotFound("Die Klausur wurde nicht gefunden.");
@@ -152,7 +152,7 @@ namespace Trialis.Controllers
                     }
                 }
             
-                _klausurRepository.UpdateKlausur(updatedKlausur);
+                _klausurService.UpdateKlausur(updatedKlausur);
 
                 return Ok("Klausur wurde erfolgreich aktualisiert.");
             }
@@ -169,13 +169,13 @@ namespace Trialis.Controllers
         {
             try
             {
-                var existingKlausur = _klausurRepository.GetKlausurById(id);
+                var existingKlausur = _klausurService.GetKlausurById(id);
                 if (existingKlausur == null)
                 {
                     return NotFound($"Klausur mit der ID {id} wurde nicht gefunden.");
                 }
 
-                bool success = _klausurRepository.DeleteKlausur(id);
+                bool success = _klausurService.DeleteKlausur(id);
                 if (!success)
                 {
                     return StatusCode(500, $"Fehler beim Löschen der Klausur mit der ID {id}.");
@@ -188,23 +188,6 @@ namespace Trialis.Controllers
                 Console.WriteLine($"Fehler beim Löschen der Klausur: {ex.Message}");
                 return StatusCode(500, "Interner Serverfehler beim Löschen der Klausur.");
             }
-        }
-
-        private bool KlausurBewertet(Klausur klausur)
-        {
-            foreach (var ergebnis in klausur.Ergebnisse.Values)
-            {
-                if (ergebnis.Wert != 0) 
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        private int GenerateUniqueId()
-        {
-            return new Random().Next(1000, 9999);
         }
     }
 }

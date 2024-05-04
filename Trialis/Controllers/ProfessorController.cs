@@ -8,11 +8,11 @@ namespace Trialis.Controllers
     [Route("api/professors")]
     public class ProfessorController : ControllerBase
     {
-        private readonly IProfessor _professorRepository;
+        private readonly IProfessorService _professorService;
 
-        public ProfessorController(IProfessor professorRepository)
+        public ProfessorController(IProfessorService professorRepository)
         {
-            _professorRepository = professorRepository;
+            _professorService = professorRepository;
         }
         
         [HttpGet]
@@ -20,7 +20,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var professors = _professorRepository.GetAllProfessors();
+                var professors = _professorService.GetAllProfessors();
 
                 return Ok(professors);
             }
@@ -37,7 +37,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var professor = _professorRepository.GetProfessorById(id);
+                var professor = _professorService.GetProfessorById(id);
 
                 if (professor == null)
                 {
@@ -64,7 +64,7 @@ namespace Trialis.Controllers
                     return BadRequest("Das Professor-Objekt darf nicht null sein.");
                 }
 
-                _professorRepository.AddProfessor(professor);
+                _professorService.AddProfessor(professor);
 
                 return Ok(professor);
             }
@@ -90,7 +90,7 @@ namespace Trialis.Controllers
                     return BadRequest("Die ID im Pfad stimmt nicht mit der ID im übergebenen Professor-Objekt überein.");
                 }
 
-                _professorRepository.UpdateProfessor(updatedProfessor);
+                _professorService.UpdateProfessor(updatedProfessor);
 
                 return Ok(updatedProfessor);
             }
@@ -106,7 +106,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                _professorRepository.DeleteProfessor(id);
+                _professorService.DeleteProfessor(id);
                 return Ok($"Professor with ID {id} has been deleted.");
             }
             catch (Exception ex)
@@ -126,7 +126,7 @@ namespace Trialis.Controllers
                     return BadRequest("Neuer Name kann nicht null oder leer sein.");
                 }
 
-                _professorRepository.UpdateName(id, newName);
+                _professorService.UpdateName(id, newName);
                 return Ok($"Name des Professors mit ID {id} wurde geändert.");
             }
             catch (Exception ex)
@@ -146,7 +146,7 @@ namespace Trialis.Controllers
                     return BadRequest("Neues Fachgebiet darf nicht null oder leer sein.");
                 }
 
-                _professorRepository.UpdateFachgebiet(id, newFachgebiet);
+                _professorService.UpdateFachgebiet(id, newFachgebiet);
                 return Ok($"Fachgebiet des Professors mit der ID {id} wurde aktualisiert.");
             }
             catch (Exception ex)

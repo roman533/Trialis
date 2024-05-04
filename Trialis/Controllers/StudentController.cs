@@ -9,11 +9,11 @@ namespace Trialis.Controllers
     public class StudentController : ControllerBase
     {
         private List<Student> _students = new List<Student>();
-        private readonly IStudent _studentRepository;
+        private readonly IStudentService _studentService;
 
-        public StudentController(IStudent studentRepository)
+        public StudentController(IStudentService studentService)
         {
-            _studentRepository = studentRepository;
+            _studentService = studentService;
         }
 
         [HttpGet]
@@ -21,7 +21,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var students = _studentRepository.GetAllStudents();
+                var students = _studentService.GetAllStudents();
                 return Ok(students);
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var student = _studentRepository.GetStudentById(id);
+                var student = _studentService.GetStudentById(id);
             
                 if (student == null)
                 {
@@ -59,7 +59,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                _studentRepository.AddStudent(student);
+                _studentService.AddStudent(student);
                 return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var existingStudent = _studentRepository.GetStudentById(id);
+                var existingStudent = _studentService.GetStudentById(id);
 
                 if (existingStudent == null)
                 {
@@ -82,7 +82,7 @@ namespace Trialis.Controllers
                 }
 
                 existingStudent.Name = newName;
-                _studentRepository.UpdateStudent(existingStudent);
+                _studentService.UpdateStudent(existingStudent);
                 return Ok("Student erfolgreich aktualisiert.");
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                _studentRepository.DeleteStudent(id);
+                _studentService.DeleteStudent(id);
                 return Ok("Student erfolgreich gelöscht.");
             }
             catch (Exception ex)
@@ -112,7 +112,7 @@ namespace Trialis.Controllers
         {
             try
             {
-                var students = _studentRepository.GetStudentsByStudienfach(studienfachId);
+                var students = _studentService.GetStudentsByStudienfach(studienfachId);
             
                 if (students == null || students.Count == 0)
                 {

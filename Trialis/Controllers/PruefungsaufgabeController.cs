@@ -11,11 +11,11 @@ namespace Trialis.Controllers;
 [Route("api/pruefungsaufgabe")]
 public class PruefungsaufgabeController : ControllerBase
 {
-    private readonly IPruefungsaufgabe _pruefungsaufgabeRepository;
+    private readonly IPruefungsaufgabeService _pruefungsaufgabeService;
 
-    public PruefungsaufgabeController(IPruefungsaufgabe pruefungsaufgabeRepository)
+    public PruefungsaufgabeController(IPruefungsaufgabeService pruefungsaufgabeService)
     {
-        _pruefungsaufgabeRepository = pruefungsaufgabeRepository;
+        _pruefungsaufgabeService = pruefungsaufgabeService;
     }
 
     [HttpGet]
@@ -23,7 +23,7 @@ public class PruefungsaufgabeController : ControllerBase
     {
         try
         {
-            var pruefungsaufgaben = _pruefungsaufgabeRepository.GetAllPruefungsaufgaben();
+            var pruefungsaufgaben = _pruefungsaufgabeService.GetAllPruefungsaufgaben();
             return Ok(pruefungsaufgaben);
         }
         catch (Exception ex)
@@ -38,7 +38,7 @@ public class PruefungsaufgabeController : ControllerBase
     {
         try
         {
-            var pruefungsaufgabe = _pruefungsaufgabeRepository.GetPruefungsaufgabeById(id);
+            var pruefungsaufgabe = _pruefungsaufgabeService.GetPruefungsaufgabeById(id);
             if (pruefungsaufgabe == null)
             {
                 return NotFound($"Prüfungsaufgabe mit der ID {id} wurde nicht gefunden.");
@@ -64,7 +64,7 @@ public class PruefungsaufgabeController : ControllerBase
                 return BadRequest("Neue Prüfungsaufgabe darf nicht null sein.");
             }
 
-            _pruefungsaufgabeRepository.AddPruefungsaufgabe(newPruefungsaufgabe);
+            _pruefungsaufgabeService.AddPruefungsaufgabe(newPruefungsaufgabe);
             return CreatedAtAction(nameof(GetPruefungsaufgabeById), new { id = newPruefungsaufgabe.Id }, newPruefungsaufgabe);
         }
         catch (Exception ex)
@@ -79,7 +79,7 @@ public class PruefungsaufgabeController : ControllerBase
     {
         try
         {
-            _pruefungsaufgabeRepository.UpdatePruefungsaufgabe(id, pruefungsaufgabe);
+            _pruefungsaufgabeService.UpdatePruefungsaufgabe(id, pruefungsaufgabe);
             return Ok("Prüfungsaufgabe erfolgreich aktualisiert.");
         }
         catch (ArgumentException ex)
@@ -98,7 +98,7 @@ public class PruefungsaufgabeController : ControllerBase
     {
         try
         {
-            _pruefungsaufgabeRepository.DeletePruefungsaufgabe(id);
+            _pruefungsaufgabeService.DeletePruefungsaufgabe(id);
             return Ok("Prüfungsaufgabe erfolgreich gelöscht.");
         }
         catch (ArgumentException ex)
@@ -117,7 +117,7 @@ public class PruefungsaufgabeController : ControllerBase
     {
         try
         {
-            _pruefungsaufgabeRepository.UpdateFrageAntwort(id, pruefungsaufgabe.Frage, pruefungsaufgabe.Antwort);
+            _pruefungsaufgabeService.UpdateFrageAntwort(id, pruefungsaufgabe.Frage, pruefungsaufgabe.Antwort);
             return Ok("Frage und Antwort der Prüfungsaufgabe erfolgreich aktualisiert.");
         }
         catch (ArgumentException ex)
@@ -136,7 +136,7 @@ public class PruefungsaufgabeController : ControllerBase
     {
         try
         {
-            _pruefungsaufgabeRepository.UpdateSchwierigkeitsgrad(id, neuerSchwierigkeitsgrad);
+            _pruefungsaufgabeService.UpdateSchwierigkeitsgrad(id, neuerSchwierigkeitsgrad);
             return Ok("Schwierigkeitsgrad der Prüfungsaufgabe erfolgreich aktualisiert.");
         }
         catch (ArgumentException ex)

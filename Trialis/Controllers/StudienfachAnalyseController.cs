@@ -7,11 +7,11 @@ namespace Trialis.Controllers;
 
 public class StudienfachAnalyseController : ControllerBase
 {
-    private readonly IStudienfachAnalyse _studienfachAnalyseRepository;
+    private readonly IStudienfachAnalyseService _studienfachAnalyseService;
 
-    public StudienfachAnalyseController(IStudienfachAnalyse studienfachAnalyseRepository)
+    public StudienfachAnalyseController(IStudienfachAnalyseService studienfachAnalyseService)
     {
-        _studienfachAnalyseRepository = studienfachAnalyseRepository;
+        _studienfachAnalyseService = studienfachAnalyseService;
     }
     
     [HttpPost("studienfach/{studienfachId}/student/{studentId}/note")]
@@ -19,16 +19,16 @@ public class StudienfachAnalyseController : ControllerBase
     {
         try
         {
-            var studienfachAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+            var studienfachAnalyse = _studienfachAnalyseService.GetStudienfachAnalyse(studentId, studienfachId);
 
             if (studienfachAnalyse == null)
             {
                 return NotFound("Studienfachanalyse nicht gefunden.");
             }
 
-            _studienfachAnalyseRepository.AddNote(note);
+            _studienfachAnalyseService.AddNote(note);
 
-            _studienfachAnalyseRepository.UpdateStudienfachAnalyse(studienfachAnalyse);
+            _studienfachAnalyseService.UpdateStudienfachAnalyse(studienfachAnalyse);
 
             return Ok("Note wurde zur Studienfachanalyse hinzugefügt.");
         }
@@ -44,7 +44,7 @@ public class StudienfachAnalyseController : ControllerBase
     {
         try
         {
-            var studienfachAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+            var studienfachAnalyse = _studienfachAnalyseService.GetStudienfachAnalyse(studentId, studienfachId);
 
             if (studienfachAnalyse == null)
             {
@@ -65,7 +65,7 @@ public class StudienfachAnalyseController : ControllerBase
     {
         try
         {
-            var existingAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+            var existingAnalyse = _studienfachAnalyseService.GetStudienfachAnalyse(studentId, studienfachId);
 
             if (existingAnalyse == null)
             {
@@ -88,14 +88,14 @@ public class StudienfachAnalyseController : ControllerBase
     {
         try
         {
-            var studienfachAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+            var studienfachAnalyse = _studienfachAnalyseService.GetStudienfachAnalyse(studentId, studienfachId);
 
             if (studienfachAnalyse == null)
             {
                 return NotFound($"Studienfachanalyse für Student mit der ID {studentId} im Studienfach mit der ID {studienfachId} wurde nicht gefunden.");
             }
 
-            double durchschnittsnote = _studienfachAnalyseRepository.CalculateDurchschnittsnote();
+            double durchschnittsnote = _studienfachAnalyseService.CalculateDurchschnittsnote();
 
             return Ok(durchschnittsnote);
         }
@@ -111,14 +111,14 @@ public class StudienfachAnalyseController : ControllerBase
     {
         try
         {
-            var studienfachAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+            var studienfachAnalyse = _studienfachAnalyseService.GetStudienfachAnalyse(studentId, studienfachId);
 
             if (studienfachAnalyse == null)
             {
                 return NotFound($"StudienfachAnalyse für Student {studentId} und Studienfach {studienfachId} nicht gefunden.");
             }
 
-            bool istBestanden = _studienfachAnalyseRepository.IstBestanden(studentId, studienfachId);
+            bool istBestanden = _studienfachAnalyseService.IstBestanden(studentId, studienfachId);
 
             return Ok(istBestanden);
         }

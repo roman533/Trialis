@@ -1,10 +1,10 @@
 using Trialis.Domain.Entities;
 
-namespace Trialis.Domain.Interfaces;
+namespace Trialis.Domain.Repositories;
 
-public interface IStudienfach
+public interface IStudienfachRepository
 {
-    public IEnumerable<Studienfach> GetAllStudienfächer();
+    public List<Studienfach> GetAllStudienfächer();
     public Studienfach GetStudienfachById(int id);
     public void AddStudienfach(Studienfach studienfach);
     public void UpdateStudienfach(Studienfach updatedStudienfach);

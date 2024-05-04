@@ -8,18 +8,18 @@ namespace Trialis.Controllers;
 [Route("api/studienfach")]
 public class StudienfachController : ControllerBase
 {
-    private readonly IStudienfach _studienfachRepository;
+    private readonly IStudienfachService _studienfachSerivce;
 
-    public StudienfachController(IStudienfach studienfachRepository)
+    public StudienfachController(IStudienfachService studienfachSerivce)
     {
-        _studienfachRepository = studienfachRepository;
+        _studienfachSerivce = studienfachSerivce;
     }
     
     public IActionResult GetAllStudienfächer()
     {
         try
         {
-            var studienfächer = _studienfachRepository.GetAllStudienfächer();
+            var studienfächer = _studienfachSerivce.GetAllStudienfächer();
             return Ok(studienfächer);
         }
         catch (Exception ex)
@@ -34,7 +34,7 @@ public class StudienfachController : ControllerBase
     {
         try
         {
-            var studienfach = _studienfachRepository.GetStudienfachById(id);
+            var studienfach = _studienfachSerivce.GetStudienfachById(id);
             if (studienfach == null)
             {
                 return NotFound($"Studienfach mit ID {id} wurde nicht gefunden.");
@@ -54,7 +54,7 @@ public class StudienfachController : ControllerBase
     {
         try
         {
-            _studienfachRepository.AddStudienfach(studienfach);
+            _studienfachSerivce.AddStudienfach(studienfach);
             return CreatedAtAction(nameof(GetStudienfachById), new { id = studienfach.Id }, studienfach);
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public class StudienfachController : ControllerBase
     {
         try
         {
-            var existingStudienfach = _studienfachRepository.GetStudienfachById(id);
+            var existingStudienfach = _studienfachSerivce.GetStudienfachById(id);
             if (existingStudienfach == null)
             {
                 return NotFound($"Studienfach mit ID {id} wurde nicht gefunden.");
@@ -83,7 +83,7 @@ public class StudienfachController : ControllerBase
             existingStudienfach.Name = updatedStudienfach.Name;
             existingStudienfach.Schwierigkeitsgrad = updatedStudienfach.Schwierigkeitsgrad;
 
-            _studienfachRepository.UpdateStudienfach(existingStudienfach);
+            _studienfachSerivce.UpdateStudienfach(existingStudienfach);
 
             return Ok("Studienfach erfolgreich aktualisiert.");
         }
@@ -99,13 +99,13 @@ public class StudienfachController : ControllerBase
     {
         try
         {
-            var studienfachToDelete = _studienfachRepository.GetStudienfachById(id);
+            var studienfachToDelete = _studienfachSerivce.GetStudienfachById(id);
             if (studienfachToDelete == null)
             {
                 return NotFound($"Studienfach mit ID {id} wurde nicht gefunden.");
             }
 
-            _studienfachRepository.DeleteStudienfach(studienfachToDelete);
+            _studienfachSerivce.DeleteStudienfach(studienfachToDelete);
         
             return NoContent();
         }
