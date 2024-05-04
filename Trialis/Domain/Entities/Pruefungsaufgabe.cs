@@ -3,7 +3,7 @@ using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Entities
 {
-    public class Pruefungsaufgabe : IPruefungsaufgabe
+    public abstract class Pruefungsaufgabe : IPruefungsaufgabe
     {
         public int Id { get; private set; }
         public string Frage { get; private set; }
@@ -12,8 +12,7 @@ namespace Trialis.Domain.Entities
         
         private List<Pruefungsaufgabe> _pruefungsaufgaben = new();
         private int _nextId = 1;
-
-
+        
         public Pruefungsaufgabe(int id, string frage, Schwierigkeitsgrad schwierigkeitsgrad, string antwort)
         {
             Id = id;
@@ -50,7 +49,7 @@ namespace Trialis.Domain.Entities
             }
         }
         
-        public void AddPruefungsaufgabe(Pruefungsaufgabe pruefungsaufgabe)
+        public virtual void AddPruefungsaufgabe(Pruefungsaufgabe pruefungsaufgabe)
         {
             try
             {
@@ -160,6 +159,20 @@ namespace Trialis.Domain.Entities
             }
 
             pruefungsaufgabeToUpdate.Schwierigkeitsgrad = neuerSchwierigkeitsgrad;
+        }
+    }
+    
+    public class MultipleChoiceAufgabe : Pruefungsaufgabe
+    {
+        public MultipleChoiceAufgabe(int id, string frage, Schwierigkeitsgrad schwierigkeitsgrad, string antwort) 
+            : base(id, frage, schwierigkeitsgrad, antwort)
+        {
+            this.Antwort = antwort;
+        }
+
+        public override void AddPruefungsaufgabe(Pruefungsaufgabe pruefungsaufgabe)
+        {
+            Console.WriteLine("Führe spezifische Erstellungsschritte für Multiple-Choice-Aufgabe durch...");
         }
     }
 }

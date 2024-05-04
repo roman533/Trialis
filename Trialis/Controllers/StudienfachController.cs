@@ -4,6 +4,8 @@ using Trialis.Domain.Interfaces;
 
 namespace Trialis.Controllers;
 
+[ApiController]
+[Route("api/studienfach")]
 public class StudienfachController : ControllerBase
 {
     private readonly IStudienfach _studienfachRepository;

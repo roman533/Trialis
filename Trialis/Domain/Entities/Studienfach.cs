@@ -17,12 +17,6 @@ public class Studienfach : IStudienfach
         Schwierigkeitsgrad = schwierigkeitsgrad;
         _studienfächer = studienfächer;
     }
-
-    public Studienfach(int id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
     
     public IEnumerable<Studienfach> GetAllStudienfächer()
     {

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Trialis.Domain.Entities;
+using Trialis.Domain.Interfaces;
 
-namespace Trialis
+/*namespace Trialis
 {
     public class Startup
     {
@@ -18,6 +20,8 @@ namespace Trialis
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddTransient<IKlausur, Klausur>();
+            services.AddScoped<IKlausur, Klausur>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,4 +39,4 @@ namespace Trialis
             });
         }
     }
-}
+}*/

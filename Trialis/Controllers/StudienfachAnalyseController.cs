@@ -26,7 +26,7 @@ public class StudienfachAnalyseController : ControllerBase
                 return NotFound("Studienfachanalyse nicht gefunden.");
             }
 
-            studienfachAnalyse.AddNote(note);
+            _studienfachAnalyseRepository.AddNote(note);
 
             _studienfachAnalyseRepository.UpdateStudienfachAnalyse(studienfachAnalyse);
 
@@ -65,8 +65,6 @@ public class StudienfachAnalyseController : ControllerBase
     {
         try
         {
-            // Beispiel Logik zum Aktualisieren der Studienfachanalyse
-            // Hier müsstest du deine tatsächliche Logik für die Aktualisierung einfügen
             var existingAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
 
             if (existingAnalyse == null)
@@ -74,17 +72,60 @@ public class StudienfachAnalyseController : ControllerBase
                 return NotFound("Studienfachanalyse nicht gefunden.");
             }
 
-            // Aktualisiere die Werte mit den Werten aus updatedAnalyse
             existingAnalyse.Noten = updatedAnalyse.Noten;
-
-            // Hier könnte auch weitere Logik für die Aktualisierung der Analyse stehen
-
+            
             return Ok(existingAnalyse);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Fehler beim Aktualisieren der Studienfachanalyse: {ex.Message}");
             return StatusCode(500, "Interner Serverfehler beim Aktualisieren der Studienfachanalyse.");
+        }
+    }
+    
+    [HttpGet("durchschnittsnote/{studentId}/{studienfachId}")]
+    public IActionResult GetStudienfachDurchschnittsnote(int studentId, int studienfachId)
+    {
+        try
+        {
+            var studienfachAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+
+            if (studienfachAnalyse == null)
+            {
+                return NotFound($"Studienfachanalyse für Student mit der ID {studentId} im Studienfach mit der ID {studienfachId} wurde nicht gefunden.");
+            }
+
+            double durchschnittsnote = _studienfachAnalyseRepository.CalculateDurchschnittsnote();
+
+            return Ok(durchschnittsnote);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fehler beim Abrufen der Durchschnittsnote des Studienfachs für Student mit der ID {studentId} im Studienfach mit der ID {studienfachId}: {ex.Message}");
+            return StatusCode(500, "Interner Serverfehler beim Abrufen der Durchschnittsnote des Studienfachs.");
+        }
+    }
+
+    [HttpGet("istbestanden/{studentId}/{studienfachId}")]
+    public IActionResult IstBestanden(int studentId, int studienfachId)
+    {
+        try
+        {
+            var studienfachAnalyse = _studienfachAnalyseRepository.GetStudienfachAnalyse(studentId, studienfachId);
+
+            if (studienfachAnalyse == null)
+            {
+                return NotFound($"StudienfachAnalyse für Student {studentId} und Studienfach {studienfachId} nicht gefunden.");
+            }
+
+            bool istBestanden = _studienfachAnalyseRepository.IstBestanden(studentId, studienfachId);
+
+            return Ok(istBestanden);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fehler beim Überprüfen, ob das Studienfach bestanden ist: {ex.Message}");
+            return StatusCode(500, "Interner Serverfehler beim Überprüfen, ob das Studienfach bestanden ist.");
         }
     }
 }

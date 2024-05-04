@@ -8,7 +8,6 @@ public interface IStudienfachAnalyse
     public void AddNote(Note note);
     public StudienfachAnalyse GetStudienfachAnalyse(int studentId, int studienfachId);
     public void UpdateStudienfachAnalyse(StudienfachAnalyse updatedAnalyse);
-    double BerechneDurchschnittsNote();
-    string GetNotenListe();
-    bool IstBestanden(double mindestNote);
+    public double CalculateDurchschnittsnote();
+    public bool IstBestanden(int studentId, int studienfachId);
 }

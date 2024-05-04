@@ -11,5 +11,4 @@ namespace Trialis.Domain.Interfaces
         public void UpdateKlausur(Klausur klausur);
         public bool DeleteKlausur(int id);
     }
-
 }

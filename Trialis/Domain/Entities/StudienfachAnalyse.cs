@@ -97,37 +97,41 @@ public class StudienfachAnalyse : IStudienfachAnalyse
         }
     }
     
-    // Methode zum Berechnen des Durchschnitts der Noten
-    public double BerechneDurchschnittsNote()
+    public double CalculateDurchschnittsnote()
     {
-        if (Noten.Count == 0)
+        if (Noten == null || Noten.Count == 0)
         {
             return 0;
         }
 
         double summe = 0;
+
         foreach (var note in Noten)
         {
-            summe += note.Wert;
+            summe += note.Wert; 
         }
 
-        return summe / Noten.Count;
+        double durchschnittsnote = summe / Noten.Count;
+
+        return durchschnittsnote;
     }
 
-    // Methode zum Abrufen der Liste der Noten als Zeichenfolge
-    public string GetNotenListe()
+    public bool IstBestanden(int studentId, int studienfachId)
     {
-        string notenListe = "";
-        foreach (var note in Noten)
+        try
         {
-            notenListe += $"Note: {note.Wert}\n";
-        }
-        return notenListe;
-    }
+            var studienfachAnalyse = GetStudienfachAnalyse(studentId, studienfachId);
 
-    // Methode zum Überprüfen, ob der Student das Studienfach bestanden hat
-    public bool IstBestanden(double mindestNote)
-    {
-        return BerechneDurchschnittsNote() >= mindestNote;
+            double durchschnittsnote = studienfachAnalyse.CalculateDurchschnittsnote();
+
+            const double bestehensgrenze = 4.0;
+
+            return durchschnittsnote >= bestehensgrenze;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fehler beim Überprüfen, ob das Studienfach bestanden ist: {ex.Message}");
+            throw;
+        }
     }
 }
