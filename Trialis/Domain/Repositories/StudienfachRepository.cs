@@ -78,20 +78,7 @@ public class StudienfachRepository : IStudienfachRepository
     {
         try
         {
-            if (updatedStudienfach == null)
-            {
-                throw new ArgumentNullException(nameof(updatedStudienfach), "Studienfach darf nicht null sein.");
-            }
-
-            if (string.IsNullOrWhiteSpace(updatedStudienfach.Name))
-            {
-                throw new ArgumentException("Studienfachname darf nicht leer oder null sein.", nameof(updatedStudienfach.Name));
-            }
-
-            if (updatedStudienfach.Schwierigkeitsgrad == Schwierigkeitsgrad.Undefined)
-            {
-                throw new ArgumentException("Schwierigkeitsgrad darf nicht Unbekannt sein.", nameof(updatedStudienfach.Schwierigkeitsgrad));
-            }
+            ValidateStudienfach(updatedStudienfach);
 
             var existingStudienfach = _studienfächer.FirstOrDefault(sf => sf.Id == updatedStudienfach.Id);
             if (existingStudienfach == null)
@@ -106,6 +93,24 @@ public class StudienfachRepository : IStudienfachRepository
         {
             Console.WriteLine($"Fehler beim Ändern des Studienfachs mit Name {updatedStudienfach.Name}: {ex.Message}");
             throw;
+        }
+    }
+    
+    private void ValidateStudienfach(Studienfach updatedStudienfach)
+    {
+        if (updatedStudienfach == null)
+        {
+            throw new ArgumentNullException(nameof(updatedStudienfach), "Studienfach darf nicht null sein.");
+        }
+
+        if (string.IsNullOrWhiteSpace(updatedStudienfach.Name))
+        {
+            throw new ArgumentException("Studienfachname darf nicht leer oder null sein.", nameof(updatedStudienfach.Name));
+        }
+
+        if (updatedStudienfach.Schwierigkeitsgrad == Schwierigkeitsgrad.Undefined)
+        {
+            throw new ArgumentException("Schwierigkeitsgrad darf nicht Unbekannt sein.", nameof(updatedStudienfach.Schwierigkeitsgrad));
         }
     }
 

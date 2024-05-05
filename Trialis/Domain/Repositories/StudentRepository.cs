@@ -66,7 +66,7 @@ public class StudentRepository : IStudentRepository
             if (student == null)
             {
                 Console.WriteLine($"Student mit ID {id} wurde nicht gefunden.");
-                return null;
+                throw new Exception($"Student mit der ID {id} nicht gefunden.");
             }
 
             return student;
