@@ -14,11 +14,6 @@ namespace Trialis.Domain.ValueObjects
             Wert = wert;
         }
 
-        public static Note Erstelle(int wert)
-        {
-            return new Note(wert);
-        }
-
         public override string ToString()
         {
             return Wert.ToString();
