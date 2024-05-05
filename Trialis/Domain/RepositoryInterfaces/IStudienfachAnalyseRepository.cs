@@ -1,7 +1,7 @@
 using Trialis.Domain.Entities;
 using Trialis.Domain.ValueObjects;
 
-namespace Trialis.Domain.Repositories;
+namespace Trialis.Domain.RepositoryInterfaces;
 
 public interface IStudienfachAnalyseRepository
 {

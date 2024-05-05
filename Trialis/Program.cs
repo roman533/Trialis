@@ -1,5 +1,6 @@
 using Trialis.Domain.Interfaces;
 using Trialis.Domain.Repositories;
+using Trialis.Domain.RepositoryInterfaces;
 using Trialis.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);

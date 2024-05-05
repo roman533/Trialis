@@ -4,7 +4,6 @@ namespace Trialis.Domain.ValueObjects
     {
         public int Wert { get; set; }
 
-        // Konstruktor für eine gültige Note
         private Note(int wert)
         {
             if (wert < 1 || wert > 5)
@@ -15,19 +14,16 @@ namespace Trialis.Domain.ValueObjects
             Wert = wert;
         }
 
-        // Öffentliche Factory-Methode zum Erstellen einer Note
         public static Note Erstelle(int wert)
         {
             return new Note(wert);
         }
 
-        // Überschreiben der ToString-Methode für eine bessere Darstellung
         public override string ToString()
         {
             return Wert.ToString();
         }
 
-        // Überschreiben der Equals- und GetHashCode-Methoden für die Vergleichbarkeit
         public override bool Equals(object obj)
         {
             var otherNote = obj as Note;

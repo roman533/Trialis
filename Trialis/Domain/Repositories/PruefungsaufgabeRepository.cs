@@ -1,4 +1,5 @@
 using Trialis.Domain.Entities;
+using Trialis.Domain.RepositoryInterfaces;
 using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Repositories;
@@ -154,16 +155,16 @@ public class PruefungsaufgabeRepository : IPruefungsaufgabeRepository
     }
 }
 
-/*public class MultipleChoiceAufgabe : Pruefungsaufgabe
+public class MultipleChoiceAufgabe : PruefungsaufgabeRepository
 {
     public MultipleChoiceAufgabe(int id, string frage, Schwierigkeitsgrad schwierigkeitsgrad, string antwort)
-        : base(id, frage, schwierigkeitsgrad, antwort)
     {
-        Antwort = antwort;
+        
     }
 
     public override void AddPruefungsaufgabe(Pruefungsaufgabe pruefungsaufgabe)
     {
         Console.WriteLine("Führe spezifische Erstellungsschritte für Multiple-Choice-Aufgabe durch...");
     }
-}*/
+}
+

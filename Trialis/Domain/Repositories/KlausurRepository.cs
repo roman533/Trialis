@@ -1,4 +1,5 @@
 using Trialis.Domain.Entities;
+using Trialis.Domain.RepositoryInterfaces;
 using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Repositories;

@@ -3,7 +3,7 @@ using Trialis.Domain.ValueObjects;
 
 namespace Trialis.Domain.Entities
 {
-    public class Pruefungsaufgabe
+    public abstract class Pruefungsaufgabe
     {
         public int Id { get; set; }
         public string Frage { get; set; }

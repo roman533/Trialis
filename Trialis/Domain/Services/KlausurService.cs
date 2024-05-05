@@ -1,6 +1,7 @@
 using Trialis.Domain.Entities;
 using Trialis.Domain.Interfaces;
 using Trialis.Domain.Repositories;
+using Trialis.Domain.RepositoryInterfaces;
 
 namespace Trialis.Domain.Services;
 

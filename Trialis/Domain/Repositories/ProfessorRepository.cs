@@ -1,4 +1,5 @@
 using Trialis.Domain.Entities;
+using Trialis.Domain.RepositoryInterfaces;
 
 namespace Trialis.Domain.Repositories;
 
@@ -131,11 +132,6 @@ public class ProfessorRepository : IProfessorRepository
             throw;
         }
     }
-    
-    /*public string GetProfessorInfo()
-    {
-        return $"Professor ID: {Id}, Name: {Name}, Fachgebiet: {Fachgebiet}";
-    }*/
 
     public void UpdateName(int id, string newName)
     {

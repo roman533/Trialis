@@ -1,4 +1,5 @@
 using Trialis.Domain.Entities;
+using Trialis.Domain.RepositoryInterfaces;
 
 namespace Trialis.Domain.Repositories;
 
@@ -7,11 +8,6 @@ public class StudentRepository : IStudentRepository
     public List<Studienfach> Studienfaecher { get; set; } = new();
     public List<Klausur> Klausuren { get; set; } = new();
     private static List<Student> _studentList = new();
-    
-    /*public string GetStudentInfo()
-    {
-        return $"ID: {Id}, Matrikelnummer: {Matrikelnummer}, Name: {Name}, Studiengang: {Studiengang}, Semester: {Semester}";
-    }*/
     
     public void HinzufuegenKlausur(Klausur klausur)
     {

@@ -1,6 +1,6 @@
 using Trialis.Domain.Entities;
 
-namespace Trialis.Domain.Repositories;
+namespace Trialis.Domain.RepositoryInterfaces;
 
 public interface IProfessorRepository
 {
