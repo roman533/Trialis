@@ -14,25 +14,34 @@ public class StudentRepository : IStudentRepository
         Klausuren.Add(klausur);
     }
 
+    /* Dies ist die Methode zur Berechnung der Durchschnittsnote */
     public double BerechneDurchschnittsnote()
     {
+        // Überprüfe, ob die Liste der Klausuren leer ist
         if (Klausuren.Count == 0)
         {
+            // Wenn die Liste leer ist, geben wir 0.0 zurück
             return 0.0;
         }
-
+        // Initialisiere die Variable für die Gesamtsumme der Noten
         double gesamtSumme = 0;
+        // Initialisiere die Variable für die Anzahl der Noten
         int anzahlNoten = 0;
 
+        // Gehe durch jede Klausur in der Liste der Klausuren
         foreach (var klausur in Klausuren)
         {
+            // Gehe durch jedes Ergebnis in der Klausur
             foreach (var ergebnis in klausur.Ergebnisse.Values)
             {
+                // Addiere den Wert des Ergebnisses zur Gesamtsumme
                 gesamtSumme += ergebnis.Wert;
+                // Erhöhe die Anzahl der Noten um 1
                 anzahlNoten++;
             }
         }
 
+        // Gebe die Durchschnittsnote zurück, indem du die Gesamtsumme durch die Anzahl der Noten teilst
         return gesamtSumme / anzahlNoten;
     }
 
@@ -139,24 +148,6 @@ public class StudentRepository : IStudentRepository
         }
     }
 
-    /*public List<Student> GetStudentsByStudienfach(int id)
-    {
-        try
-        {
-            if (!_studentList.Any(s => s.GetStudienfaecher().Any(sf => sf.Id == id)))
-            {
-                return null;
-            }
-
-            return _studentList.Where(s => s.GetStudienfaecher().Any(sf => sf.Id == id)).ToList();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Fehler beim Laden des Studenten anhand des Studienfachs: {ex.Message}");
-            throw;
-        }
-    }*/
-    
     public List<Studienfach> GetStudienfaecher()
     {
         try
