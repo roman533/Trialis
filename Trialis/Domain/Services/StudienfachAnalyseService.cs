@@ -10,6 +10,11 @@ public class StudienfachAnalyseService : IStudienfachAnalyseService
 {
     private readonly IStudienfachAnalyseRepository _studienfachAnalyseRepository;
     
+    public StudienfachAnalyseService(IStudienfachAnalyseRepository studienfachAnalyseRepository)
+    {
+        _studienfachAnalyseRepository = studienfachAnalyseRepository;
+    }
+    
     public void AddNote(Note note)
     {
         _studienfachAnalyseRepository.AddNote(note);

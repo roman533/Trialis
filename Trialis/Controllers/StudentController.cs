@@ -9,7 +9,7 @@ namespace Trialis.Controllers
     public class StudentController : ControllerBase
     {
         private List<Student> _students = new List<Student>();
-        private readonly IStudentService _studentService;
+        private IStudentService _studentService;
 
         public StudentController(IStudentService studentService)
         {

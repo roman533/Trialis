@@ -7,8 +7,13 @@ namespace Trialis.Domain.Services;
 
 public class StudentService : IStudentService
 {
-    private readonly IStudentRepository _studentRepository;
+    private IStudentRepository _studentRepository;
 
+    public StudentService(IStudentRepository studentRepository)
+    {
+        _studentRepository = studentRepository;
+    }
+    
     public void HinzufuegenKlausur(Klausur klausur)
     {
         _studentRepository.HinzufuegenKlausur(klausur);

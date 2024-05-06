@@ -10,6 +10,11 @@ public class PruefungsaufgabeService : IPruefungsaufgabeService
 {
     private readonly IPruefungsaufgabeRepository _pruefungsaufgabeRepository;
     
+    public PruefungsaufgabeService(IPruefungsaufgabeRepository pruefungsaufgabeRepository)
+    {
+        _pruefungsaufgabeRepository = pruefungsaufgabeRepository;
+    }
+    
     public List<Pruefungsaufgabe> GetAllPruefungsaufgaben()
     {
         return _pruefungsaufgabeRepository.GetAllPruefungsaufgaben();

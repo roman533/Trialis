@@ -9,6 +9,11 @@ public class StudienfachService : IStudienfachService
 {
     private readonly IStudienfachRepository _studienfachRepository;
     
+    public StudienfachService(IStudienfachRepository studienfachRepository)
+    {
+        _studienfachRepository = studienfachRepository;
+    }
+    
     public List<Studienfach> GetAllStudienfächer()
     {
         return _studienfachRepository.GetAllStudienfächer();

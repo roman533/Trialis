@@ -1,12 +1,19 @@
 using Trialis.Domain.Entities;
 using Trialis.Domain.Interfaces;
 using Trialis.Domain.Repositories;
+using Trialis.Domain.RepositoryInterfaces;
 
 namespace Trialis.Domain.Services;
 
 public class ProfessorService : IProfessorService
 {
-    private readonly ProfessorRepository _professorRepository;
+    private readonly IProfessorRepository _professorRepository;
+    
+    public ProfessorService(IProfessorRepository professorRepository)
+    {
+        _professorRepository = professorRepository;
+    }
+    
     public List<Professor> GetAllProfessors()
     {
         return _professorRepository.GetAllProfessors();
