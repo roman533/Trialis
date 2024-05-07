@@ -12,7 +12,6 @@ Dieses Projekt verwendet folgende Technologien:
 - ASP.NET
 - Razor ASP.NET Core
 - NUnit 3.0
-- Moq
 
 ## Einrichten und Ausführen des Projektes
 
